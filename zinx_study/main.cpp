@@ -1,4 +1,5 @@
-#include <zinx.h>
+//#include <zinx.h>
+#include "zinx/zinx.h"
 #include <iostream>
 
 using namespace std;

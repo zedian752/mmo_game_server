@@ -76,6 +76,13 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="zinx\utils.cpp" />
+    <ClCompile Include="zinx\zinx.cpp" />
+    <ClCompile Include="zinx\ZinxTCP.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="zinx\zinx.h" />
+    <ClInclude Include="zinx\ZinxTCP.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
