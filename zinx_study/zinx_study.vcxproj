@@ -75,14 +75,25 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClCompile Include="CmdCheck.cpp" />
+    <ClCompile Include="CmdMsg.cpp" />
+    <ClCompile Include="EchoRole.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="StdInOutChannel.cpp" />
     <ClCompile Include="zinx\utils.cpp" />
     <ClCompile Include="zinx\zinx.cpp" />
     <ClCompile Include="zinx\ZinxTCP.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CmdCheck.h" />
+    <ClInclude Include="CmdMsg.h" />
+    <ClInclude Include="EchoRole.h" />
+    <ClInclude Include="StdInOutChannel.h" />
     <ClInclude Include="zinx\zinx.h" />
     <ClInclude Include="zinx\ZinxTCP.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram2.cd" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

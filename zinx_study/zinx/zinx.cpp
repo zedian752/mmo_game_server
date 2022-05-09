@@ -125,12 +125,12 @@ void ZinxKernel::SendOut(UserData & _oUserData)
 {
 
 }
-ZinxKernel *ZinxKernel::poZinxKernel = NULL;
+ZinxKernel *ZinxKernel::poZinxKernel = NULL; // 单例模式
 bool ZinxKernel::ZinxKernelInit()
 {
 	if (NULL == poZinxKernel)
 	{
-		poZinxKernel = new ZinxKernel();
+		poZinxKernel = new ZinxKernel(); // 建立epoll fd
 	}
 	
 	return true;
