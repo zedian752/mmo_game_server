@@ -24,10 +24,10 @@ bool ZinxKernel::Add_Channel(Ichannel & _oChannel)
 {
 	bool bRet = false;
 
-	if (true == _oChannel.Init())
+	if (true == _oChannel.Init()) // 初始化成功的才加入epoll监听
 	{
 		struct epoll_event stEvent;
-		stEvent.events = EPOLLIN|EPOLLOUT;
+		stEvent.events = EPOLLIN|EPOLLOUT; // 监听可读/可写行为
 		stEvent.data.ptr = &_oChannel;
 
 		if (0 == epoll_ctl(iEpollFd, EPOLL_CTL_ADD, _oChannel.GetFd(), &stEvent))
@@ -152,7 +152,7 @@ void ZinxKernel::Zinx_Del_Channel(Ichannel & _oChannel)
 	poZinxKernel->Del_Channel(_oChannel);
 }
 
-Ichannel *ZinxKernel::Zinx_GetChannel_ByInfo(std::string _szInfo)
+Ichannel * ZinxKernel::Zinx_GetChannel_ByInfo(std::string _szInfo)
 {
     Ichannel *pret = NULL;
 

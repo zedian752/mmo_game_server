@@ -14,7 +14,7 @@ void AZinxHandler::Handle(IZinxMsg & _oInput)
 		poNextHandler = GetNextHandler(*poNextMsg);
 		if (NULL != poNextHandler)
 		{
-			poNextHandler->Handle(*poNextMsg);
+			poNextHandler->Handle(*poNextMsg); // 递归执行
 		}
 
 		delete poNextMsg;
@@ -47,7 +47,7 @@ IZinxMsg *Ichannel::InternelHandle(IZinxMsg & _oInput)
 		{
 			ZinxKernel::Zinx_SetChannelOut(*this);
 		}
-		//���뷢�ͻ�����
+		// 将任务增加到用户态缓存区
 		m_WriteBuffer.push_back(oBytes.szData);
 	}
 

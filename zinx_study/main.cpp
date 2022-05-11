@@ -4,6 +4,7 @@
 #include "StdInOutChannel.h"
 #include <iostream>
 #include "EchoRole.h"
+#include "ZinxTimer.h"
 
 using namespace std;
 /*读标准输入，回显到标准输出*/
@@ -199,6 +200,9 @@ int main()
 	
 	ZinxKernel::Zinx_Add_Channel( *(new StdInChannel()) ); // 通过epoll监听STDIN_FILENO 终端标准输入，一个channel代表一个输入或者一个输出
 	ZinxKernel::Zinx_Add_Channel(*(new StdOutChannel())); // 通过epoll监听STDIN_FILENO 终端标准输出 
+	ZinxKernel::Zinx_Add_Channel(*(new ZinxTCPListen(6666, new myFact() ))); // 通过epoll监听lfd
+	ZinxKernel::Zinx_Add_Channel(*(new ZinxTimerChannel())); // 通过epoll监听timer_fd监听1个定时任务
+
 	ZinxKernel::Zinx_Add_Role(*(new EchoRole()));
 	ZinxKernel::Zinx_Add_Role(*(new DatePreRole()));
 	ZinxKernel::Zinx_Add_Role(*(new OutputCtrl()));

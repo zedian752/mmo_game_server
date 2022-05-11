@@ -4,6 +4,7 @@
 
 /*tcp数据套接字通道类，继承通道类，该类也是一个抽象类，需要开发者继承该类，
 重写GetInputNextStage函数以指定读取到的字节流的处理方式*/
+// cfd读写类
 class ZinxTcpData :public Ichannel {
 private:
 	int m_DataFd = -1;
@@ -24,9 +25,11 @@ public:
 /*产生tcp数据套接字通道类的抽象工厂类，
 开发者需要重写CreateTcpDataChannel函数，来返回一个tcp通道对象
 一般地，开发者应该同时创建一对tcp通道类和工厂类*/
+// 纯标记类
 class IZinxTcpConnFact {
 public:
-	virtual ZinxTcpData *CreateTcpDataChannel(int _fd) = 0;
+	virtual ZinxTcpData * CreateTcpDataChannel(int _fd) = 0;
+	virtual ~IZinxTcpConnFact() {}
 };
 
 /*tcp监听通道类，这是一个实体类（不建议继承该类），开发者可以直接创建tcp监听通道对象，
@@ -37,9 +40,9 @@ class ZinxTCPListen :
 private:
 	unsigned short m_usPort = 0;
 	int m_fd = -1;
-	IZinxTcpConnFact *m_ConnFac = NULL;
+	IZinxTcpConnFact *m_ConnFac = NULL; // tcp套接字工厂类
 public:
-	ZinxTCPListen(unsigned short _usPort, IZinxTcpConnFact *_pConnFac) :m_usPort(_usPort), m_ConnFac(_pConnFac){}
+	ZinxTCPListen(unsigned short _usPort, IZinxTcpConnFact *_pConnFac) :m_usPort(_usPort), m_ConnFac(_pConnFac){} // 构造的时候注入tcp工厂实例
 	virtual ~ZinxTCPListen();
 
 	virtual bool Init() override;

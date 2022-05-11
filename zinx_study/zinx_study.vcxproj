@@ -78,8 +78,11 @@
     <ClCompile Include="CmdCheck.cpp" />
     <ClCompile Include="CmdMsg.cpp" />
     <ClCompile Include="EchoRole.cpp" />
+    <ClCompile Include="enum_channel.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="StdInOutChannel.cpp" />
+    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="ZinxTimer.cpp" />
     <ClCompile Include="zinx\utils.cpp" />
     <ClCompile Include="zinx\zinx.cpp" />
     <ClCompile Include="zinx\ZinxTCP.cpp" />
@@ -89,6 +92,7 @@
     <ClInclude Include="CmdMsg.h" />
     <ClInclude Include="EchoRole.h" />
     <ClInclude Include="StdInOutChannel.h" />
+    <ClInclude Include="ZinxTimer.h" />
     <ClInclude Include="zinx\zinx.h" />
     <ClInclude Include="zinx\ZinxTCP.h" />
   </ItemGroup>

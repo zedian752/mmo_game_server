@@ -1,4 +1,5 @@
 #include "ZinxTCP.h"
+#include "../StdInOutChannel.h"
 
 ZinxTCPListen::~ZinxTCPListen()
 {
@@ -59,7 +60,8 @@ bool ZinxTCPListen::ReadFd(std::string & _input)
 	iDataFd = accept(m_fd, (struct sockaddr *)&stClientAddr, &lAddrLen);
 	if (0 <= iDataFd)
 	{
-		auto poTcpDataChannel = m_ConnFac->CreateTcpDataChannel(iDataFd);
+		//auto poTcpDataChannel = m_ConnFac->CreateTcpDataChannel(iDataFd);
+		auto poTcpDataChannel = new myTcpData(iDataFd);
 		if (NULL != poTcpDataChannel)
 		{
 			bRet = ZinxKernel::Zinx_Add_Channel(*poTcpDataChannel);
@@ -120,12 +122,12 @@ bool ZinxTcpData::ReadFd(std::string & _input)
 	}
 
 	std::cout << "<----------------------------------------->" << std::endl;
-	std::cout << "recv from " << m_DataFd << ":" << Ichannel::Convert2Printable(_input) << std::endl;
+	std::cout << "recv from " << m_DataFd << ":" << Ichannel::Convert2Printable(_input) << std::endl; // 字符串转用string表示的字节流
 	std::cout << "<----------------------------------------->" << std::endl;
 
 	if (false == bRet)
 	{
-		SetChannelClose();
+		this->SetChannelClose();
 	}
 
 	return bRet;
@@ -137,7 +139,7 @@ bool ZinxTcpData::WriteFd(std::string & _output)
 	bool bRet = false;
 	char *pOut = (char *)calloc(1UL, _output.size());
 	_output.copy(pOut, _output.size(), 0);
-	if ((0 <= m_DataFd) && (_output.size() == send(m_DataFd,pOut,_output.size(), 0)))
+	if ((0 <= m_DataFd) && ((signed long)_output.size() == send(m_DataFd,pOut,_output.size(), 0)))
 	{
 		bRet = true;
 		std::cout << "<----------------------------------------->" << std::endl;

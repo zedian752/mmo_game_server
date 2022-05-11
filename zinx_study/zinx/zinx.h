@@ -25,10 +25,11 @@
 #include <list>
 #include <sys/wait.h>
 
-/*定义动态类型转换后的引用类型，若转换失败则执行返回NULL*/
+/*定义动态类型转换后的引用类型，若转换失败则执行返回NULL*/ 
 #define GET_REF2DATA(type, ref, orig)  type * pref = dynamic_cast<type *>(&orig); if (nullptr == pref) {return nullptr;} type &ref = dynamic_cast<type&>(orig)
 
 /*所有handler实例之间传递的消息父类*/
+// Msg总类，无功能实现，仅做标记
 class IZinxMsg {
 public:
 	IZinxMsg() {}
@@ -36,6 +37,7 @@ public:
 };
 
 /*处理这handler抽象类，需要重写处理信息方法和获取下一个处理者方法*/
+// handler处理总类，可理解为链表 1 抽象处理函数 2 抽象指向next的函数
 class AZinxHandler {
 public:
 	AZinxHandler() {}
@@ -52,7 +54,7 @@ protected:
 /*系统信息类，只包含当前信息的方向*/
 class SysIOReadyMsg :public IZinxMsg {
 public:
-	enum IO_DIC {
+	enum IO_DIC { // 定义IO方向枚举，并定义方向字段
 		IN, OUT
 	} m_emIoDic;
 
@@ -62,13 +64,14 @@ public:
 /*字节流信息类，包含string封装的字节流，string封装的通道信息和父类中的方向*/
 class BytesMsg :public SysIOReadyMsg {
 public:
-	BytesMsg(SysIOReadyMsg &_base) :SysIOReadyMsg(_base.m_emIoDic) {}
+	BytesMsg(SysIOReadyMsg &_base) :SysIOReadyMsg(_base.m_emIoDic) {} // 赋值构造函数
 	std::string szInfo;
 	std::string szData;
 };
 
 /*纯用户数据信息，需要开发者继承后添加业务相关字段*/
-class UserData {
+// 业务层数据类，仅是标记
+class UserData :public IZinxMsg {
 public:
 	UserData() {}
 	virtual ~UserData() {}
@@ -83,7 +86,7 @@ public:
 	{
 		if (NULL != poUserData)
 		{
-			delete poUserData;
+			delete poUserData; // 这里不会进来第二次了，所有不需要把指针也设置为null
 		}
 	}
 };
@@ -91,6 +94,7 @@ public:
 /*角色类，派生自基础处理者类，提供初始化，去初始化，处理信息，设置、清除下一个处理者的虚函数。
 角色类是用于处理业务数据的，开发者应该将一个纯业务流程由一个或多个角色类的子类处理
 角色对象应该被添加到zinxkernel中*/
+// 业务类，用于区分不同的role处理不用的userData
 class Irole :public AZinxHandler {
 public:
 	Irole() {}
@@ -133,7 +137,7 @@ public:
 	/*原始数据和业务数据相互函数，开发者重写该函数，实现协议*/
 	virtual UserData *raw2request(std::string _szInput) = 0;
 	
-	/*原始数据和业务数据相互函数，开发者重写该函数，实现协议*/
+	/*生成的业务数据和原始数据相互函数，开发者重写该函数，实现协议*/
 	virtual std::string *response2raw(UserData &_oUserData) = 0;
 protected:
     /*获取处理角色对象函数，开发者应该重写该函数，用来指定当前产生的用户数据消息应该传递给哪个角色处理*/
@@ -154,7 +158,7 @@ public:
 	virtual ~Ichannel() {};
 	
 	/*通道初始化函数，一般地，开发者应该重写这个函数实现打开文件和一定的参数配置
-	该函数会在通道对象添加到zinxkernel时被调用*/
+	会在zinxkernel执行add_channel时被调用*/
 	virtual bool Init() = 0;
 
 	/*读取数据， 开发者应该根据目标文件不同，重写这个函数，以实现将fd中的数据读取到参数_string中
@@ -172,7 +176,7 @@ public:
 	/*获取文件描述符函数， 开发者应该在该函数返回当前关心的文件，
 	一般地，开发者应该在派生类中定义属性用来记录数据来记录当前IO所用的文件，在此函数中只是返回该属性*/
 	virtual int GetFd() = 0;
-	void FlushOut();
+	void FlushOut(); // 通过write处理所有在m_WriteBuffer里面的std::string数据
 	bool HasOutput() { return false == m_WriteBuffer.empty(); }
 	std::string Convert2Printable(std::string &_szData);
 
@@ -231,10 +235,10 @@ public:
 	/*运行框架，该函数运行后会一直循环处理IO数据，直到Zinx_Exit被调用*/
 	static void Zinx_Run();
 
-	/*向外发送数据，将参数1指定的用户数据通过参数2指定的协议对象发出*/
+	/*向外发送数据，将指定的用户数据通过指定的协议对象发出*/
 	static void Zinx_SendOut(UserData &_oUserData, Iprotocol &_oProto);
 
-	/*向外发送数据，将参数1指定的字节流通过参数2指定的通道发出*/
+	/*向外发送数据，将指定的字节流通过指定的通道发出*/
 	static void Zinx_SendOut(std::string &szBytes, Ichannel &_oChannel);
 private:
 	ZinxKernel();
@@ -247,12 +251,12 @@ private:
 	void Del_Role(Irole &_oRole);
 	void Run();
 	void SendOut(UserData &_oUserData);
-	std::list<Ichannel *> m_ChannelList;
-	std::list<Iprotocol *> m_ProtoList;
-	std::list<Irole *> m_RoleList;
+	std::list<Ichannel *> m_ChannelList; // 通道层列表
+	std::list<Iprotocol *> m_ProtoList; // 协议层列表（中间件）
+	std::list<Irole *> m_RoleList; // 角色层列表（业务处理层）
 	int iEpollFd = -1;
 	static ZinxKernel *poZinxKernel;
-	bool m_need_exit = false;
+	bool m_need_exit = false; // 毒丸
 public:
     /*停止框架*/
 	static void Zinx_Exit()

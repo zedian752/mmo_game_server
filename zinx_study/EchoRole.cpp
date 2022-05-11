@@ -102,6 +102,7 @@ UserData* DatePreRole::ProcMsg(UserData& _poUserData) {
             pret = new CmdMsg(input);
         }
     }
+    return pret;
 }
 
 void DatePreRole::Fini() {
