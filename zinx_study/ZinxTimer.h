@@ -32,9 +32,10 @@ class TimerOutMng : public AZinxHandler {
 	TimerOutMng();
 	std::vector<std::list<TimerOutProc*>> m_timer_wheel; // 定时器时间轮
 	int cur_index = 0;
-	static TimerOutMng single;
+	
 public:
 	static TimerOutMng& getInstance() {
+		static TimerOutMng single;
 		return single;
 	}
 	/*处理超时事件,遍历所有超时任务*/

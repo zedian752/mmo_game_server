@@ -71,7 +71,7 @@ std::string ZinxTimerChannel::GetChannelInfo() {
 	return &TimerOutMng::getInstance(); // 下一个handler
 }
 
- TimerOutMng TimerOutMng::single; // 初始化静态变量，调用构造函数
+ //TimerOutMng TimerOutMng::single; // 初始化静态变量，调用构造函数
  TimerOutMng::TimerOutMng() {
 	 for (int i = 0; i < 10; ++i) { // 置入10个空的链表元素
 		 std::list<TimerOutProc*> tmp; 
@@ -95,7 +95,7 @@ std::string ZinxTimerChannel::GetChannelInfo() {
 			 if ((*itr)->iCount <= 0) {
 				 m_cache.push_back(*itr);
 				 auto ptmp = *itr;
-				 itr = m_timer_wheel[cur_index].erase(itr); // 将事件取出来，并加入回阻塞队列缓存里,并且因为erase了，所以这里不要++itr
+				 itr = m_timer_wheel[cur_index].erase(itr); // 将事件取出来，并加入回阻塞队列缓存里,并且因为erase了，并获取下一个迭代器，erase的时候会执行构析函数
 				 addTask(ptmp);
 			 }
 			 else {

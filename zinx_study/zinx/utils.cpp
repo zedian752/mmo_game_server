@@ -1,5 +1,5 @@
 #include "zinx.h"
-#include "zinx.h"
+
 
 using namespace std;
 
